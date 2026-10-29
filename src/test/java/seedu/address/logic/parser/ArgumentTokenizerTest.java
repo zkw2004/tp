@@ -54,6 +54,24 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
+    public void getRawValue_keepsUntrimmedValueAndIsEmptyForAbsentPrefix() {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize("pre p/ \fvalue\t -t  last ", pSlash, dashT);
+
+        // trim() also removes control characters such as the form feed, which the raw value keeps.
+        assertEquals("value", argMultimap.getValue(pSlash).get());
+        assertEquals(" \fvalue\t ", argMultimap.getRawValue(pSlash).get());
+        assertEquals("  last ", argMultimap.getRawValue(dashT).get());
+        assertFalse(argMultimap.getRawValue(hatQ).isPresent());
+    }
+
+    @Test
+    public void getRawValue_repeatedPrefix_returnsLastUntrimmedValue() {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize("p/ first p/ second ", pSlash);
+
+        assertEquals(" second ", argMultimap.getRawValue(pSlash).get());
+    }
+
+    @Test
     public void tokenize_noPrefixes_allTakenAsPreamble() {
         String argsString = "  some random string /t tag with leading and trailing spaces ";
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString);

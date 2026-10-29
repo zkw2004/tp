@@ -25,19 +25,13 @@ public class ArgumentMultimap {
     private final Map<Prefix, List<String>> rawArgMultimap = new HashMap<>();
 
     /**
-     * Associates the specified argument value with {@code prefix} key in this map.
-     * If the map previously contained a mapping for the key, the new value is appended to the list of existing values.
-     *
-     * @param prefix   Prefix key with which the specified argument value is to be associated
-     * @param argValue Argument value to be associated with the specified prefix key
-     */
-    public void put(Prefix prefix, String argValue) {
-        put(prefix, argValue, argValue);
-    }
-
-    /**
-     * Associates a trimmed and original argument value with {@code prefix}.
+     * Associates the specified argument value, and the original value before trimming, with {@code prefix}.
+     * If the map previously contained a mapping for the key, the new values are appended to the existing values.
      * The original value is available to parsers that must validate otherwise-trimmed characters.
+     *
+     * @param prefix      Prefix key with which the specified argument value is to be associated
+     * @param argValue    Trimmed argument value to be associated with the specified prefix key
+     * @param rawArgValue The same argument value before trimming
      */
     public void put(Prefix prefix, String argValue, String rawArgValue) {
         List<String> argValues = getAllValues(prefix);
